@@ -15,7 +15,6 @@ def fisherYatesShuffling(deck_to_shuffle):
 
 
 def generate_ordered_deck():
-    # create cards values
     values = list(range(1, 11))
     deck_of_cards = []
     value_occurrence = 4

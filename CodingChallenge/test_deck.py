@@ -54,10 +54,24 @@ class TestDeck(unittest.TestCase):
 
    def test_comparing_same_cards(self):
       game = game_module.Game()
-      player1 = Player([9, 1],[], 1)
-      player2 = Player([10, 1],[], 2)
-      self.assertEqual(0, compare_cards(player1, player2, game))
+      starting_deck = generate_ordered_deck()
+      shuffled_deck = shuffle_deck_of_cards(starting_deck, True)
+      player1 = Player(shuffled_deck.cards[:20],[], 1)
+      player2 = Player(shuffled_deck.cards[20:],[], 2)
+      player1.draw_pile[-1] = 1
+      player2.draw_pile[-1] = 1
+      player1.draw_pile[-2] = 5
+      player2.draw_pile[-2] = 9
+      print(f"{player1.draw_pile}")
+      print(f"{player2.draw_pile}")
+      result = compare_cards(player1, player2, game)
+      self.assertEqual(0, result)
       print(f"Cards hold from the tie: {game.tie_cards}")
+      self.assertEqual(2, compare_cards(player1, player2, game))
+      player2.discard_pile.append(player1.card)
+      player2.discard_pile.append(player2.card)
+      self.assertEqual(4, len(player2.discard_pile))
+      print(f"Winner discard pile: {player2.discard_pile}")   
       
 if __name__ == '__main__':
    unittest.main()

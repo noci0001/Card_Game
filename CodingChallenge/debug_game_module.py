@@ -43,34 +43,32 @@ def compare_cards(player1, player2, game):
    draw_top_card(player1)
    draw_top_card(player2)
    prev_tie = False
+   if (len(game.tie_cards) > 1):
+      print("Previously there was a tie! Prev cards:")
+      print(f"\n{game.tie_cards}")
    if (player1.card == player2.card):
       print("No winner in this round")
       game.tie_cards += [player1.card, player2.card]
+      print(f"Returning tie cards: {game.tie_cards}")
       return (0)
    elif (player1.card > player2.card):
-      print("Player 1 wins this round\n")
+      print("Player 1 wins this round")
       if (len(game.tie_cards) > 1):
+         print("+ tie cards!\n")
          for card in list(game.tie_cards):
+               print(f"adding card: {card}")
                player1.discard_pile.append(game.tie_cards.pop())
       return (1)
    elif (player2.card > player1.card):
-      print("Player 2 wins this round\n")
+      print("Player 2 wins this round")
       if (len(game.tie_cards) > 1):
+         print("+ tie cards!\n")
          for card in list(game.tie_cards):
+            print(f"adding card: {card}")
             player2.discard_pile.append(game.tie_cards.pop())
       return (2)
-   
-def winner_gets_cards(game, turn_winner, player1, player2):
-   if (turn_winner == 1):
-      player1.discard_pile.append(player1.card)
-      player1.discard_pile.append(player2.card)
-      game.tie_cards = []
-   elif (turn_winner == 2):
-      player2.discard_pile.append(player1.card)
-      player2.discard_pile.append(player2.card)
-      game.tie_cards = []
 
-def start_game(game, player1, player2):
+def debug_start_game(game, player1, player2):
    counter = 0
    while (1):
       if (player1.num_player_cards() == 0):
@@ -86,19 +84,34 @@ def start_game(game, player1, player2):
                game.tie_cards.pop()
          break
       game.turn_winner = compare_cards(player1, player2, game)
-      winner_gets_cards(game, game.turn_winner, player1, player2)
+      print(f"This should indicate the winner: {game.turn_winner}\n")
+      if (game.turn_winner == 1):
+         print(f"WINNER DISCARD PILE(BEFORE): {player1.discard_pile}\n")
+         player1.discard_pile.append(player1.card)
+         player1.discard_pile.append(player2.card)
+         print(f"WINNER DISCARD PILE(AFTER): {player1.discard_pile}\n")
+         game.tie_cards = []
+      elif (game.turn_winner == 2):
+         print(f"WINNER DISCARD PILE(BEFORE): {player2.discard_pile}\n")
+         player2.discard_pile.append(player1.card)
+         player2.discard_pile.append(player2.card)
+         print(f"WINNER DISCARD PILE(AFTER): {player2.discard_pile}\n")
+         game.tie_cards = []
+      print(f"G T C: {len(game.tie_cards)}, cards: {game.tie_cards}")
+      print(f"P1 C: {player1.num_player_cards()}")
+      print(f"P2 C: {player2.num_player_cards()}")
       total_cards = player1.num_player_cards() + player2.num_player_cards() + len(game.tie_cards)
       if (total_cards != 40):
+         print(f"Cards are not 40 at all times, total_cards: {total_cards}")
+         print(f"P1 cards:{player1.num_player_cards()}\n P2 cards: {player2.num_player_cards()}")
          break
       counter += 1
    winner = indentify_winner(player1, player2)
    if (winner == 1):
       player1.won = True
       player2.won = False
-      print("Player 1 wins the game!\n")
+      print("Player 1 wins the game!")
    else:
       player1.won = False
       player2.won = True
-      print("Player 2 wins the game!\n")
-
-
+      print("Player 2 wins the game!")
